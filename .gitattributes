@@ -1,0 +1,2 @@
+# Track pretrained model weights with Git LFS
+weights/*.pt filter=lfs diff=lfs merge=lfs -text

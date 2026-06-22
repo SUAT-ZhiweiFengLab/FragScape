@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+title: "PepCleaver: A Generalizable Deep Learning Framework for Proteolytic Cleavage Modeling and Experimentally Validated Bioactive Peptide Discovery"
+message: "If you use this software, please cite the paper below."
+type: software
+authors:
+  - family-names: Xue
+    given-names: Ying
+  - family-names: Duan
+    given-names: Xiaobo
+  - family-names: Liu
+    given-names: Cong
+  - family-names: Li
+    given-names: Siqi
+  - family-names: Guo
+    given-names: Shangwei
+  - family-names: Zheng
+    given-names: Liang
+  - family-names: Feng
+    given-names: Zhiwei
+  - family-names: Ouyang
+    given-names: Qin
+  - family-names: Liu
+    given-names: Haibin
+keywords:
+  - proteolytic cleavage
+  - deep learning
+  - transformer
+  - ESM-2
+  - collagen peptides
+  - multi-instance learning
+  - virtual screening
+license: Apache-2.0
+repository-code: "https://github.com/SUAT-ZhiweiFengLab/PepCleaver"
+version: "1.0.0"
+date-released: "2026-06-23"
