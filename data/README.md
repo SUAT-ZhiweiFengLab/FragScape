@@ -20,6 +20,13 @@ benchmarking.
 **Columns:** `seq` (peptide sequence), `label` (1 = cleavage, 0 = non-cleavage),
 `split` (train / val / test).
 
+**Split note:** The manuscript describes a CD-HIT 50%-identity precursor-level
+split. The provided CSV was produced by the development pipeline at the
+peptide level and contains no cross-split sequence duplicates (verified:
+train∩val = train∩test = val∩test = 0). To reconstruct the dataset with
+explicit CD-HIT precursor clustering from raw MEROPS files, use
+`scripts/build_dataset.py`.
+
 The dataset is curated from the public
 [MEROPS database](https://www.ebi.ac.uk/merops/). To reconstruct it from raw
 MEROPS files, see `scripts/build_dataset.py`.

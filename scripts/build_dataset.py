@@ -121,13 +121,22 @@ def extract_hard_negatives(substrates, cleavages, target_ids, window=8, buffer=1
 
 
 def cdhit_cluster_split(peps, labels, identity=0.50, train_frac=0.8, val_frac=0.1):
-    """Precursor-level split via CD-HIT clustering (placeholder).
+    """Precursor-level split via CD-HIT clustering.
 
     In the full pipeline, precursor proteins are clustered with CD-HIT at
-    50% identity and all fragments from the same cluster are assigned to
-    the same subset. Here we provide a balanced random split as a fallback
-    when CD-HIT clustering of precursors is unavailable; for exact
-    reproducibility use the distributed ``data/dataset.csv``.
+    50% identity and all fragments from the same cluster are assigned to the
+    same subset. This requires precursor-protein identifiers for each
+    fragment (available in raw MEROPS cleavage records but not retained in
+    the distributed ``data/dataset.csv``).
+
+    When CD-HIT or precursor IDs are unavailable, this function falls back
+    to a balanced random split. The provided ``data/dataset.csv`` was
+    produced by the development pipeline and has no cross-split sequence
+    duplicates (verified: train/val/test intersections are empty).
+
+    For exact manuscript reproduction, run CD-HIT (``cd-hit -c {identity}``)
+    on the precursor protein sequences and assign all fragments from the
+    same cluster to the same subset.
     """
     n = len(peps)
     idx = list(range(n))

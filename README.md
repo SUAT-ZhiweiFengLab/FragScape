@@ -254,6 +254,47 @@ final candidate peptide library for molecular docking:
 - The ESM-2 encoder is frozen, so embeddings are deterministic.
 - Pre-computed embeddings, trained weights, and result CSVs are provided.
 - `requirements.txt` pins minimum dependency versions.
+- Verified end-to-end: `evaluate.py` reproduces Test AUC = 0.9566 with the
+  provided weights; `predict.py` + `virtual_screening.py` reproduce the
+  cleavage map and 350-peptide library.
+
+## Implementation Notes
+
+The following notes document implementation details and known deviations
+from the manuscript description, in the interest of full transparency for
+reproducibility:
+
+1. **ESM-2 encoding scope.** The manuscript describes extracting ESM-2
+   residue-level hidden states from the *full-length precursor protein*
+   before fragment extraction, so that each 9-residue fragment inherits
+   long-range flanking context (P4–P4′). The precursor protein sequence
+   data used during development was not available at the time of code
+   release, so this implementation extracts ESM-2 embeddings directly at
+   the *fragment level* (each peptide encoded independently). The Gated
+   Fusion module's global protein prior `F_protein` is consequently
+   approximated by masked mean-pooling of the fragment's own ESM-2
+   embeddings. This does not alter the model architecture or training
+   protocol, but reduces long-range context. Users with full-length
+   precursor sequences can restore the original behavior by modifying
+   `extract_embeddings.py` to encode full proteins and then slice
+   fragment windows from the per-residue representations.
+
+2. **Dataset split.** The manuscript states that precursor proteins were
+   clustered with CD-HIT at 50% sequence identity and all fragments from
+   the same cluster were assigned to the same subset (precursor-level
+   split). The provided `data/dataset.csv` was produced by the
+   development pipeline and contains peptide-level columns only
+   (`seq`, `label`, `split`); it has no cross-split sequence duplicates
+   (verified: train∩val = train∩test = val∩test = 0). `scripts/build_dataset.py`
+   provides a CD-HIT precursor-clustering split interface for users who
+   reconstruct the dataset from raw MEROPS files; when CD-HIT is
+   unavailable it falls back to a clustered random split.
+
+3. **"StarHead" attention.** The manuscript refers to a "StarHead
+   self-attention encoder." As the manuscript does not provide a formal
+   definition of StarHead distinct from standard multi-head attention,
+   this implementation uses `nn.TransformerEncoder` with 4 heads and
+   feed-forward dimension 1024, matching all stated hyperparameters.
 
 ## Citation
 

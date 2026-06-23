@@ -18,7 +18,12 @@ import sys
 
 import numpy as np
 import torch
-from sklearn.metrics import roc_auc_score, f1_score, accuracy_score, precision_recall_curve
+from sklearn.metrics import (
+    roc_auc_score,
+    f1_score,
+    accuracy_score,
+    average_precision_score,
+)
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from model.pepcleaver import PepCleaver
@@ -63,9 +68,8 @@ def main():
     print(f"Test AUC: {auc:.4f}")
     print(f"Threshold {args.threshold}: F1={f1:.4f} Acc={acc:.4f} pass-rate={n_pass}/{len(y_te)}={n_pass/len(y_te)*100:.1f}%")
 
-    # Precision-recall curve
-    prec, rec, _ = precision_recall_curve(y_te, prob)
-    pr_auc = np.trapz(rec[::-1], prec[::-1])
+    # PR-AUC (average precision)
+    pr_auc = average_precision_score(y_te, prob)
     print(f"PR-AUC (AP): {pr_auc:.4f}")
 
     os.makedirs(os.path.dirname(os.path.abspath(args.output)), exist_ok=True)

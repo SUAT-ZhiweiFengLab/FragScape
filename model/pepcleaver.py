@@ -73,7 +73,7 @@ class PepCleaver(nn.Module):
             batch_first=True,
             norm_first=True,
         )
-        self.transformer = nn.TransformerEncoder(enc_layer, n_attn_layers)
+        self.transformer = nn.TransformerEncoder(enc_layer, n_attn_layers, enable_nested_tensor=False)
 
         # Global protein prior projection (ESM-2 mean-pooling -> emb_dim)
         self.protein_proj = nn.Linear(emb_dim, emb_dim)

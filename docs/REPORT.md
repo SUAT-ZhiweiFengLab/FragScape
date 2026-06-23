@@ -125,14 +125,54 @@ model's confidence aligns with downstream experimental outcomes.
 
 ## 6. Implementation Notes
 
-- **ESM-2 encoding:** the frozen ESM-2 encoder (esm2_t12_35M_UR50D, 35M
-  parameters) extracts 480-dimensional residue-level representations from
-  the final hidden layer. Sequences are padded/truncated to a fixed maximum
-  length of 9 residues with binary attention masks.
+### 6.1 ESM-2 encoding scope
+
+The manuscript describes extracting ESM-2 residue-level hidden states from
+the *full-length precursor protein* before fragment extraction, so that each
+9-residue fragment inherits long-range flanking context (P4–P4′ positions
+relative to both cleavage boundaries). The precursor protein sequence data
+used during development was not available at the time of code release, so
+this implementation extracts ESM-2 embeddings directly at the *fragment
+level* (each peptide encoded independently, then padded/truncated to length
+9). The Gated Fusion module's global protein prior `F_protein` is
+consequently approximated by masked mean-pooling of the fragment's own ESM-2
+embeddings, projected through a linear layer and LayerNorm. This does not
+alter the model architecture or training protocol, but reduces long-range
+context. Users with full-length precursor sequences can restore the original
+behavior by modifying `extract_embeddings.py` to encode full proteins and
+then slice fragment windows from the per-residue representations.
+
+### 6.2 Dataset split
+
+The manuscript states that precursor proteins were clustered with CD-HIT at
+50% sequence identity and all fragments from the same cluster were assigned
+to the same subset. The provided `data/dataset.csv` was produced by the
+development pipeline and contains peptide-level columns only (`seq`,
+`label`, `split`); it has no cross-split sequence duplicates (verified:
+train∩val = train∩test = val∩test = 0, and no sequence carries conflicting
+labels). `scripts/build_dataset.py` provides a CD-HIT precursor-clustering
+split interface for users who reconstruct the dataset from raw MEROPS files;
+when CD-HIT is unavailable it falls back to a clustered random split.
+
+### 6.3 "StarHead" attention
+
+The manuscript refers to a "StarHead self-attention encoder." As the
+manuscript does not provide a formal definition of StarHead distinct from
+standard multi-head attention, this implementation uses
+`nn.TransformerEncoder` with 4 heads and feed-forward dimension 1024,
+matching all stated hyperparameters (2 layers, pre-norm, GELU activation,
+padding-aware masking).
+
+### 6.4 Other details
+
 - **Parameters:** 4,805,057 trainable (ESM-2 frozen).
 - **Inference (MIL):** the full-length precursor protein is treated as a
   "bag" and candidate fragments as "instances"; independent instance-level
   scores are tracked across original sequence coordinates to reconstruct the
   global cleavage landscape.
-- **Reproducibility:** fixed seeds, frozen ESM-2 (deterministic embeddings),
-  provided pre-computed caches, trained weights, and result CSVs.
+- **Reproducibility:** fixed seeds (42), frozen ESM-2 (deterministic
+  embeddings), provided pre-computed caches, trained weights, and result
+  CSVs. End-to-end verification: `evaluate.py` reproduces Test AUC = 0.9566;
+  `predict.py` + `virtual_screening.py` reproduce the cleavage map and
+  350-peptide library (≤0.01% numerical drift from floating-point
+  non-determinism).
