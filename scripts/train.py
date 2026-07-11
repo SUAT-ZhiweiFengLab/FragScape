@@ -57,9 +57,9 @@ def main():
     print(f"Device: {device}")
 
     # Load embeddings
-    data = np.load(args.embeddings, allow_pickle=True)
+    data = np.load(args.embeddings)
     X, y, splits, mask = data["X"], data["labels"], data["splits"], data["mask"]
-    splits = np.array([str(s) for s in splits])
+    splits = np.array([str(s) for s in splits], dtype=str)
     tr = splits == "train"; va = splits == "val"; te = splits == "test"
     print(f"Train={tr.sum()} Val={va.sum()} Test={te.sum()}")
 

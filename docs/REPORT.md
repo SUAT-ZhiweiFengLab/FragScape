@@ -174,5 +174,5 @@ padding-aware masking).
   embeddings), provided pre-computed caches, trained weights, and result
   CSVs. End-to-end verification: `evaluate.py` reproduces Test AUC = 0.9566;
   `predict.py` + `virtual_screening.py` reproduce the cleavage map and
-  350-peptide library (≤0.01% numerical drift from floating-point
+   candidate peptide library (≤0.01% numerical drift from floating-point
   non-determinism).

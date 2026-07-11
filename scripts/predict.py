@@ -87,7 +87,7 @@ def main():
     ap = argparse.ArgumentParser(description="Predict proteolytic cleavage landscape")
     ap.add_argument("--protein", required=True, help="Input protein FASTA")
     ap.add_argument("--weights", default="weights/pepcleaver.pt")
-    ap.add_argument("--output", default="results/cleavage_map.csv")
+    ap.add_argument("--output", default="results/donkey_cleavage_map.csv")
     ap.add_argument("--threshold", type=float, default=0.7)
     ap.add_argument("--min-len", type=int, default=2)
     ap.add_argument("--max-len", type=int, default=9)
@@ -126,7 +126,7 @@ def main():
 
     # Predict
     model = PepCleaver().to(device)
-    model.load_state_dict(torch.load(args.weights, map_location=device))
+    model.load_state_dict(torch.load(args.weights, map_location=device, weights_only=True))
     model.eval()
     mask = build_mask(peps)
     with torch.no_grad():

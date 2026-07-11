@@ -73,7 +73,12 @@ class PepCleaver(nn.Module):
             batch_first=True,
             norm_first=True,
         )
-        self.transformer = nn.TransformerEncoder(enc_layer, n_attn_layers, enable_nested_tensor=False)
+        # enable_nested_tensor was deprecated in PyTorch 2.1+; conditionally set only for 2.0.x
+        enc_kw = {}
+        if (hasattr(torch, "__version__")
+                and torch.__version__.startswith("2.0.")):
+            enc_kw["enable_nested_tensor"] = False
+        self.transformer = nn.TransformerEncoder(enc_layer, n_attn_layers, **enc_kw)
 
         # Global protein prior projection (ESM-2 mean-pooling -> emb_dim)
         self.protein_proj = nn.Linear(emb_dim, emb_dim)

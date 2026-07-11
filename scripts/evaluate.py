@@ -36,19 +36,22 @@ def main():
     ap.add_argument("--embeddings", required=True)
     ap.add_argument("--weights", default="weights/pepcleaver.pt")
     ap.add_argument("--output", default="results/test_predictions.csv")
+    ap.add_argument("--dataset", default=None,
+                    help="Path to dataset.csv (for writing seq column in output). "
+                         "Auto-resolved if not provided.")
     ap.add_argument("--threshold", type=float, default=0.7)
     ap.add_argument("--device", default="auto")
     args = ap.parse_args()
 
     device = torch.device("cuda" if (args.device == "auto" and torch.cuda.is_available()) else "cpu")
 
-    data = np.load(args.embeddings, allow_pickle=True)
+    data = np.load(args.embeddings)
     X, y, splits, mask = data["X"], data["labels"], data["splits"], data["mask"]
-    splits = np.array([str(s) for s in splits])
+    splits = np.array([str(s) for s in splits], dtype=str)
     te = splits == "test"
 
     model = PepCleaver().to(device)
-    model.load_state_dict(torch.load(args.weights, map_location=device))
+    model.load_state_dict(torch.load(args.weights, map_location=device, weights_only=True))
     model.eval()
 
     with torch.no_grad():
@@ -77,8 +80,10 @@ def main():
         w = csv.writer(f)
         w.writerow(["seq", "label", "prob", "split"])
         # Re-read sequences to write alongside predictions
-        npz_dir = os.path.dirname(os.path.abspath(args.embeddings))
-        ds = os.path.join(os.path.dirname(npz_dir), "data", "dataset.csv")
+        ds = args.dataset
+        if ds is None:
+            npz_dir = os.path.dirname(os.path.abspath(args.embeddings))
+            ds = os.path.join(os.path.dirname(npz_dir), "data", "dataset.csv")
         seqs = None
         if os.path.exists(ds):
             with open(ds) as f2:

@@ -1,7 +1,7 @@
 # PepCleaver
 
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
-![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)
+![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-red.svg)
 ![ESM-2](https://img.shields.io/badge/ESM--2-35M-green.svg)
 
@@ -57,7 +57,7 @@ PepCleaver/
 │   ├── train.py                # Training (AdamW + cosine + focal loss)
 │   ├── evaluate.py             # Test-set evaluation (AUC, F1, PR-AUC)
 │   ├── predict.py              # Cleavage-landscape inference (MIL)
-│   └── virtual_screening.py    # 350-peptide library generation
+│   └── virtual_screening.py    # Library generation (target 350, actual 346)
 ├── weights/                    # Pre-trained weights (Git LFS)
 │   └── pepcleaver.pt           # 4.8M params (~19 MB)
 ├── data/                       # Dataset & precursor protein
@@ -66,7 +66,7 @@ PepCleaver/
 ├── results/                    # Pre-computed outputs
 │   ├── test_predictions.csv    # Held-out test predictions
 │   ├── donkey_cleavage_map.csv # COL1A1 cleavage landscape
-│   └── pepcleaver_350_library.csv  # Final 350-peptide library
+│   └── pepcleaver_350_library.csv  # Final library (target 350, actual 346)
 ├── example/                    # Quick-start example
 │   └── inference_example.py
 ├── docs/                       # Documentation
@@ -87,8 +87,18 @@ cd PepCleaver
 pip install -r requirements.txt
 ```
 
-> Requires PyTorch ≥ 2.0 and the `fair-esm` package (downloads ESM-2 weights
-> automatically on first run, ~135 MB).
+> **Requirements:**
+> * Python ≥ 3.10
+> * PyTorch ≥ 2.0
+> * `fair-esm` package (downloads ESM-2 weights ~135 MB on first run)
+> * [Git LFS](https://git-lfs.com/) — pre-trained weights in `weights/` are
+>   tracked via Git LFS. After cloning, run:
+>   ```bash
+>   git lfs pull
+>   ```
+>
+> **Tested environment:** Python 3.13, PyTorch 2.5.1 + CUDA 12.1, fair-esm 2.0.0,
+> NVIDIA RTX 5880 Ada Generation (48 GB), Ubuntu 24.04.
 
 ### Inference — score candidate peptides
 
@@ -139,7 +149,7 @@ python scripts/predict.py \
     --weights weights/pepcleaver.pt \
     --output results/donkey_cleavage_map.csv
 
-# 5. Hierarchical virtual screening -> 350-peptide library
+# 5. Hierarchical virtual screening -> candidate peptide library
 python scripts/virtual_screening.py \
     --cleavage-map results/donkey_cleavage_map.csv \
     --output results/pepcleaver_350_library.csv
@@ -256,7 +266,7 @@ final candidate peptide library for molecular docking:
 - `requirements.txt` pins minimum dependency versions.
 - Verified end-to-end: `evaluate.py` reproduces Test AUC = 0.9566 with the
   provided weights; `predict.py` + `virtual_screening.py` reproduce the
-  cleavage map and 350-peptide library.
+  cleavage map and candidate peptide library (target 350, actual 346).
 
 ## Implementation Notes
 
@@ -301,18 +311,21 @@ reproducibility:
 If you use PepCleaver in your research, please cite:
 
 ```bibtex
-@article{pepcleaver2026,
-  title   = {PepCleaver: A Generalizable Deep Learning Framework for
-             Proteolytic Cleavage Modeling and Experimentally Validated
-             Bioactive Peptide Discovery},
-  author  = {Xue, Ying and Duan, Xiaobo and Liu, Cong and Li, Siqi and
-             Guo, Shangwei and Zheng, Liang and Feng, Zhiwei and
-             Ouyang, Qin and Liu, Haibin},
-  journal = {Nature Methods},
-  year    = {2026},
-  doi     = {10.1038/s41592-026-xxxx}
+@software{pepcleaver2026,
+  title        = {PepCleaver: A Generalizable Deep Learning Framework for
+                  Proteolytic Cleavage Modeling and Experimentally Validated
+                  Bioactive Peptide Discovery},
+  author       = {Xue, Ying and Duan, Xiaobo and Liu, Cong and Li, Siqi and
+                  Guo, Shangwei and Zheng, Liang and Feng, Zhiwei and
+                  Ouyang, Qin and Liu, Haibin},
+  year         = {2026},
+  version      = {1.0.0},
+  publisher    = {GitHub},
 }
 ```
+
+> **Note:** A manuscript describing this work is in preparation. The citation
+> will be updated with journal and DOI details upon publication.
 
 ## License
 
@@ -323,9 +336,10 @@ This project is licensed under the **Apache License 2.0** — see
 
 - **Issues:** [GitHub Issues](https://github.com/SUAT-ZhiweiFengLab/PepCleaver/issues)
 - **Corresponding authors:** xue.ying1@zs-hospital.sh.cn;
-  fengzhiwei@suat-sz.edu.cn; liuhaibin@dongeejiao.com
+  moouyang@suat-sz.edu.cn; yuzhang@qlu.edu.cn; Lv.qianzhou@zs-hospital.sh.cn;
+  fengzhiwei@suat-sz.edu.cn; ouyangq@tmmu.edu.cn; liuhaibin@dongeejiao.com
 
 ---
 
 **Version:** 1.0.0  
-**Release date:** 2026-06-23
+**Release date:** 2026-07-11

@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 title: "PepCleaver: A Generalizable Deep Learning Framework for Proteolytic Cleavage Modeling and Experimentally Validated Bioactive Peptide Discovery"
-message: "If you use this software, please cite the paper below."
+message: "If you use this software, please cite it as below."
 type: software
 authors:
   - family-names: Xue
@@ -32,4 +32,29 @@ keywords:
 license: Apache-2.0
 repository-code: "https://github.com/SUAT-ZhiweiFengLab/PepCleaver"
 version: "1.0.0"
-date-released: "2026-06-23"
+date-released: "2026-07-11"
+preferred-citation:
+  type: software
+  title: "PepCleaver: A Generalizable Deep Learning Framework for Proteolytic Cleavage Modeling and Experimentally Validated Bioactive Peptide Discovery"
+  authors:
+    - family-names: Xue
+      given-names: Ying
+    - family-names: Duan
+      given-names: Xiaobo
+    - family-names: Liu
+      given-names: Cong
+    - family-names: Li
+      given-names: Siqi
+    - family-names: Guo
+      given-names: Shangwei
+    - family-names: Zheng
+      given-names: Liang
+    - family-names: Feng
+      given-names: Zhiwei
+    - family-names: Ouyang
+      given-names: Qin
+    - family-names: Liu
+      given-names: Haibin
+  version: "1.0.0"
+  year: "2026"
+  note: "A manuscript describing this work is in preparation. DOI and journal details will be added upon publication."

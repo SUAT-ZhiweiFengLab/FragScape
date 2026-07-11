@@ -19,17 +19,24 @@ The resulting dataset contains 13,312 balanced samples (6,656 positive /
 
 Prerequisites
 -------------
-Download the MEROPS database (https://www.ebi.ac.uk/merops/) and export:
-  * substrate sequences (UniProt ID -> full-length sequence)
-  * cleavage records (substrate_id, merops_id, cleavage_pos, peptide)
+This script expects pre-parsed MEROPS pickle files in ``--merops-dir``:
 
-Alternatively, use the pre-built ``data/dataset.csv`` distributed with
-this repository.
+  * ``merops_substrates.pkl`` — ``dict {uniprot_id: full_length_sequence}``
+  * ``merops_cleavage_parsed.pkl`` — ``list [dict]`` with keys
+    ``substrate_id``, ``merops_id``, ``cleavage_pos``, ...
+  * ``merops_enzyme_by_family.pkl`` — ``dict {family: {mer_ids: [...]}}``
+
+These pickle files are **not** standard MEROPS database exports. They are
+produced by an internal parsing pipeline that processes raw MEROPS
+flat-file dumps (https://www.ebi.ac.uk/merops/).
+
+If you only need to use the pre-built dataset for training, skip this script
+and use the distributed ``data/dataset.csv`` directly.
 
 Usage
 -----
     python scripts/build_dataset.py \
-        --merops-dir /path/to/merops \
+        --merops-dir /path/to/parsed_merops \
         --output data/dataset.csv
 """
 import argparse
@@ -120,14 +127,14 @@ def extract_hard_negatives(substrates, cleavages, target_ids, window=8, buffer=1
     return pos_peps, neg_peps
 
 
-def cdhit_cluster_split(peps, labels, identity=0.50, train_frac=0.8, val_frac=0.1):
-    """Precursor-level split via CD-HIT clustering.
+def cluster_split(peps, labels, identity=0.50, train_frac=0.8, val_frac=0.1):
+    """Split dataset into train/val/test with no sequence leakage.
 
-    In the full pipeline, precursor proteins are clustered with CD-HIT at
-    50% identity and all fragments from the same cluster are assigned to the
-    same subset. This requires precursor-protein identifiers for each
-    fragment (available in raw MEROPS cleavage records but not retained in
-    the distributed ``data/dataset.csv``).
+    In the full manuscript pipeline, precursor proteins are clustered with
+    CD-HIT at 50% identity and all fragments from the same cluster are
+    assigned to the same subset. This requires precursor-protein identifiers
+    for each fragment (available in raw MEROPS cleavage records but not
+    retained in the distributed ``data/dataset.csv``).
 
     When CD-HIT or precursor IDs are unavailable, this function falls back
     to a balanced random split. The provided ``data/dataset.csv`` was
@@ -179,7 +186,7 @@ def main():
 
     all_peps = pos_peps + neg_peps
     all_labels = [1] * n + [0] * n
-    splits = cdhit_cluster_split(all_peps, all_labels)
+    splits = cluster_split(all_peps, all_labels)
 
     os.makedirs(os.path.dirname(os.path.abspath(args.output)), exist_ok=True)
     with open(args.output, "w", newline="") as f:

@@ -14,7 +14,7 @@ benchmarking.
 | Positive samples | Experimentally supported cleavage-derived peptides |
 | Negative samples | Same-substrate hard negatives (non-cleaved regions) |
 | Train / Val / Test | 10,649 / 1,331 / 1,332 (8:1:1, precursor-level split) |
-| Peptide length | 2–9 residues |
+| Peptide length | 2–8 residues |
 | Split strategy | CD-HIT clustering at 50% sequence identity, no cluster leakage |
 
 **Columns:** `seq` (peptide sequence), `label` (1 = cleavage, 0 = non-cleavage),

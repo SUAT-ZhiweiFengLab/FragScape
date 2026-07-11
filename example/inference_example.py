@@ -82,7 +82,7 @@ def main():
     # 2. Load pretrained PepCleaver
     weights_path = os.path.join(ROOT, "weights", "pepcleaver.pt")
     model = PepCleaver().to(device)
-    model.load_state_dict(torch.load(weights_path, map_location=device))
+    model.load_state_dict(torch.load(weights_path, map_location=device, weights_only=True))
     model.eval()
 
     # 3. Predict proteolytic likelihood
