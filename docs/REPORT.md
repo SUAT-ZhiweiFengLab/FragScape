@@ -1,12 +1,20 @@
-# PepCleaver — Technical Report
+> **改名与清理说明（2026-10-02）** — 本项目原名 *PepCleaver*，现更名为 **FragScape**。
+> 本文档为**历史性报告**：其中描述的训练脚本、数据集与旧权重多数已在本次清理中移出本仓库
+> （可恢复，位于 `/home/jilinan/.fragscape_trash`），文档内的品牌与文件名也经过机械替换，
+> 可能与当前实际文件名不完全一致。本仓库现在仅保留可复现 **0.6644** 的局部上下文推理链路
+> （`model/fragscape.py`、`scripts/predict.py`、`weights/fragscape.pt`、
+> `data/local_context_embeddings.pkl`）。请以仓库根目录 `README.md` 与实际文件为准。
+
+
+# FragScape — Technical Report
 
 This document describes the implementation, training, and validation of the
-PepCleaver framework, and details the architectural decisions relative to
+FragScape framework, and details the architectural decisions relative to
 the development lineage.
 
 ## 1. Overview
 
-PepCleaver models proteolytic cleavage as a sequence-to-fragment mapping
+FragScape models proteolytic cleavage as a sequence-to-fragment mapping
 problem. Given a precursor protein, the framework evaluates candidate
 peptide fragments tiled across the sequence and assigns each a
 peptide-level proteolytic likelihood score. Applied to a full-length

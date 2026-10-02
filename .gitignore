@@ -19,7 +19,7 @@ env/
 
 # Caches
 cache/
-cache_pepcleaver/
+cache_fragscape/
 .esm_cache/
 *.npy
 *.npz
@@ -38,3 +38,10 @@ Thumbs.db
 
 # Large model weights tracked via Git LFS (see .gitattributes)
 # weights/*.pt are handled by LFS
+
+# Local-only +-20 local-context embedding cache (~466 MB on disk).
+# Deliberately NOT shipped: it is pure derived data and is reproducible from
+# data/human_col2a1.fsa with ESM-2 to float noise (see README "Quick start").
+# Generate one locally and pass it via `--cache <path>` if you want the
+# speed-up; scripts/predict.py prefers it automatically when it exists.
+data/*.pkl

@@ -1,6 +1,6 @@
-"""PepCleaver architectural components.
+"""FragScape architectural components.
 
-Implements the modules described in the PepCleaver manuscript:
+Implements the modules described in the FragScape manuscript:
   * Gated Fusion module
   * Residual Conv1D blocks
   * Hybrid (average + log-sum-exp) pooling

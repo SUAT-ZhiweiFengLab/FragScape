@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-title: "PepCleaver: A Generalizable Deep Learning Framework for Proteolytic Cleavage Modeling and Experimentally Validated Bioactive Peptide Discovery"
+title: "FragScape: A Generalizable Deep Learning Framework for Proteolytic Cleavage Modeling and Experimentally Validated Bioactive Peptide Discovery"
 message: "If you use this software, please cite it as below."
 type: software
 authors:
@@ -30,12 +30,12 @@ keywords:
   - multi-instance learning
   - virtual screening
 license: Apache-2.0
-repository-code: "https://github.com/SUAT-ZhiweiFengLab/PepCleaver"
+repository-code: "https://github.com/SUAT-ZhiweiFengLab/FragScape"
 version: "1.0.0"
 date-released: "2026-07-11"
 preferred-citation:
   type: software
-  title: "PepCleaver: A Generalizable Deep Learning Framework for Proteolytic Cleavage Modeling and Experimentally Validated Bioactive Peptide Discovery"
+  title: "FragScape: A Generalizable Deep Learning Framework for Proteolytic Cleavage Modeling and Experimentally Validated Bioactive Peptide Discovery"
   authors:
     - family-names: Xue
       given-names: Ying
