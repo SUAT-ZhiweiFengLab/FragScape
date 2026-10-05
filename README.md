@@ -1,6 +1,6 @@
 # FragScape
 
-**FragScape** (formerly *PepCleaver*) is a deep-learning framework for predicting
+**FragScape**  is a deep-learning framework for predicting
 protease cleavage sites and the bioactive fragments they release from a protein
 sequence. It couples the frozen protein language model **ESM-2 (t12, 35M)** with
 a lightweight Transformer head that operates on **local sequence context**
