@@ -4,6 +4,10 @@
 > 可能与当前实际文件名不完全一致。本仓库现在仅保留可复现 **0.6644** 的局部上下文推理链路
 > （`model/fragscape.py`、`scripts/predict.py`、`weights/fragscape.pt`、
 > `data/local_context_embeddings.pkl`）。请以仓库根目录 `README.md` 与实际文件为准。
+>
+> **Verification note:** an independent, read-only verification of this release
+> (methodology, corpus-integrity checks, and reproduction) is documented in
+> `docs/VERIFICATION_AND_SELF_AUDIT.md`.
 
 
 # FragScape — Technical Report
