@@ -14,23 +14,40 @@ peptide-level and protein-level representations.
 
 ---
 
+## Inference-only release
+
+This repository ships the trained checkpoint `weights/fragscape.pt` together
+with a single entry point, `scripts/predict.py`. Training code, dataset
+builders and benchmark dumps are **not** included, so the released checkpoint is
+intended for **running predictions**, not for retraining. The one supported
+usage is scoring peptides with `scripts/predict.py` (see Quick start below).
+
 ## Verified result
+
+On the leakage-resistant benchmark reported in the manuscript (experimentally
+annotated MEROPS M10/M12 substrates, split at the precursor level by 50%
+sequence identity into 52,056 / 6,507 / 6,507 samples), FragScape reached a test
+ROC AUC of **0.852** (Figure 2C). This is the framework's headline benchmark
+result, measured on unseen precursor proteins.
 
 | peptide | weights | context | score |
 |---|---|---|---|
 | `GFPGTPGLPGVK` (COL2A1) | `weights/fragscape.pt` | +-20 aa | **0.6644** |
 
-`0.6644` is the "balanced point" reported in
-`docs/FragScape_v1.0_v2.1_comprehensive_report.md`: the trade-off between overall
-test AUC (0.7513) and the confidence assigned to the COL2A1 target.
+`0.6644` is the value this release reproduces end-to-end for the verified
+target, returned by `scripts/predict.py` from the +-20 local-context window
+recomputed on the COL2A1 precursor. The two numbers answer different questions
+and should not be conflated: **0.852** is the benchmark-level test AUC reported
+in the manuscript, whereas **0.6644** is the single-peptide probability produced
+by the released checkpoint.
 
 Known erratum: an earlier, **context-free** path produced `0.5509` for the same
 peptide. That value came from a short-peptide-only model that encoded the
 fragment without any flanking context (through `scripts/predict_long.py` and a
 `col2a1_10_12_predictions.csv` dump generated on 2026-08-03). It is not the
-balanced-point result. Both the script and the dump were removed from this
-release; see `docs/FragScape_0.664_local_context_status.md` for the full
-provenance trail.
+verified `0.6644` result of this release. Both the script and the dump were
+removed from this release; see `docs/FragScape_0.664_local_context_status.md`
+for the full provenance trail.
 
 ---
 
@@ -108,7 +125,7 @@ FragScape/
 │   ├── __init__.py
 │   └── predict.py                    # the one supported inference entry point
 └── weights/
-    └── fragscape.pt                  # balanced-point weights (19 MB)
+    └── fragscape.pt                  # released checkpoint, inference only (19 MB)
 ```
 
 A fresh clone is therefore ~19 MB: only `weights/fragscape.pt` is carried by Git
